@@ -1,0 +1,125 @@
+#Requires AutoHotkey v2
+
+#Warn ; Enable warnings to assist with detecting common errors
+#SingleInstance Force ; Заменять текущее приложение, запускаемыми
+#MaxThreadsPerHotkey 1 ; Макс кол-во потоков на кнопку
+#WinActivateForce ; Пропустить более мягкий метод активации окна
+
+SetKeyDelay 5, 5 ; Скорость эмуляции клавиши
+SetMouseDelay 5 ; Скорость мыши
+SetWorkingDir A_InitialWorkingDir ; Устанавливаю рабочую папку
+SetTitleMatchMode 2 ; Sets the matching behavior of the WinTitle parameter in commands such as WinWait
+
+A_HotkeyInterval := 2000
+A_MaxHotkeysPerInterval := 10000
+global SetPause := false ; Глобальная переменная паузы (не трогать)
+
+return
+
+; Hotkeys:
+; * # - Win
+; * ^ - Ctrl
+; * ! - Alt
+; * + - Shift
+; * * - (wildcard) allows the hotkey to fire even if you are holding modifier keys that the hotkey doesn't include symbols for
+; * ~ - (no-suppress) prevents the hotkey from blocking the key's native function
+; * $ - (use hook) prevents unintentional loops when sending keys, and in some instances makes the hotkey more reliable
+
+#HotIf WinActive("High on Life")
+
+; ## ## ## ## ##
+; ## Clicking
+
+; Ultimate 1
+*XButton2:: {
+    if (SetPause)
+        return
+    Send("{2}")
+    Sleep(250)
+    Send("{Q}")
+    Sleep(250)
+    Send("{1}")
+}
+
+; Ultimate 2
+*XButton1:: {
+    if (SetPause)
+        return
+    Send("{3}")
+    Sleep(250)
+    Send("{Q}")
+    Sleep(250)
+    Send("{1}")
+}
+
+; Shield
+; *WheelLeft
+*MButton:: {
+    if (SetPause)
+        return
+    Send("{2}")
+    Sleep(350)
+    Click("Down Right")
+    Sleep(150)
+    While GetKeyState("MButton", "P") && !SetPause {
+        Sleep(50)
+    }
+    Click("Up Right")
+    Sleep(150)
+    Send("{1}")
+}
+
+/*
+; Letzdoit
+; *WheelRight
+*G:: {
+    if (SetPause)
+        return
+    Send("{5}")
+    Sleep(350)
+    Click("Down Right")
+    Sleep(150)
+    Click("Down Left")
+    Sleep(150)
+    While GetKeyState("G", "P") && !SetPause {
+        Sleep(50)
+    }
+    Click("Up Left")
+    Click("Up Right")
+    Sleep(150)
+    Send("{1}")
+}
+*/
+
+#HotIf
+
+; ## ## ## ## ##
+; ## Utility
+
+; Home
+sc147:: {
+    global SetPause := false
+    Tooltip("Pause removed.")
+    SetTimer () => ToolTip(), -2000
+    return
+}
+
+; End
+sc14F:: {
+    global SetPause := true
+    Tooltip("Pause set.")
+    SetTimer () => ToolTip(), -2000
+    return
+}
+
+; Ctrl + Home
+^sc147:: {
+    Reload
+    return
+}
+
+; Ctrl + End
+^sc14F:: {
+    ExitApp
+    return
+}

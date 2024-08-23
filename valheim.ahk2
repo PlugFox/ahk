@@ -1,0 +1,205 @@
+#Requires AutoHotkey v2
+
+#Warn ; Enable warnings to assist with detecting common errors
+#SingleInstance Force ; Заменять текущее приложение, запускаемыми
+#MaxThreadsPerHotkey 1 ; Макс кол-во потоков на кнопку
+#WinActivateForce ; Пропустить более мягкий метод активации окна
+
+SetKeyDelay 5, 5 ; Скорость эмуляции клавиши
+SetMouseDelay 5 ; Скорость мыши
+SetWorkingDir A_InitialWorkingDir ; Устанавливаю рабочую папку
+SetTitleMatchMode 2 ; Sets the matching behavior of the WinTitle parameter in commands such as WinWait
+
+A_HotkeyInterval := 2000
+A_MaxHotkeysPerInterval := 10000
+global SetPause := false ; Глобальная переменная паузы (не трогать)
+
+return
+
+; Hotkeys:
+; * # - Win
+; * ^ - Ctrl
+; * ! - Alt
+; * + - Shift
+; * * - (wildcard) allows the hotkey to fire even if you are holding modifier keys that the hotkey doesn't include symbols for
+; * ~ - (no-suppress) prevents the hotkey from blocking the key's native function
+; * $ - (use hook) prevents unintentional loops when sending keys, and in some instances makes the hotkey more reliable
+
+#HotIf WinActive("Valheim")
+
+; ## ## ## ## ##
+; ## Clicking
+
+/* ; Farming
+; Shift + Click
+~*+LButton:: {
+    if (SetPause)
+        return
+    Sleep(250)
+    While GetKeyState("LButton", "P") && !SetPause {
+        Click
+        Sleep(25)
+    }
+}
+*/
+
+; Cooking
+; Alt + Insert
+~*!Ins:: {
+    if (SetPause)
+        return
+    Sleep(250)
+    Click()
+    delay := 1900
+    counter := 0
+    While !GetKeyState("Ins", "P") && !GetKeyState("Alt", "P") && !SetPause {
+        if (SetPause)
+            return
+        Sleep(25)
+        counter += 25
+        if (counter >= delay) {
+            Click()
+            counter := 0
+            ; SoundBeep(500, 500)
+        }
+    }
+}
+
+; Farming
+; Shift + E
+~*+E:: {
+    if (SetPause)
+        return
+    Sleep(250)
+    While GetKeyState("E", "P") && !SetPause {
+        Send("{E}")
+        Sleep(25)
+    }
+}
+
+; Weapon with shield
+*XButton2:: {
+    if (SetPause)
+        return
+    Send("{R}{1}{2}")
+}
+
+; Bow
+*XButton1:: {
+    if (SetPause)
+        return
+    Send("{R}{3}")
+}
+
+; Left salto
+*WheelLeft:: {
+    if (SetPause)
+        return
+    b := GetKeyState("RButton", "P")
+    if (!b) {
+        Click("Down Right")
+        Sleep(15)
+    }
+    l := GetKeyState("A", "P")
+    if (!l)
+        Send("{A down}")
+    Send("{Space down}")
+    Sleep(25)
+    Send("{Space up}")
+    if (!l)
+        Send("{A up}")
+    if (!b)
+        Click("Up Right")
+}
+
+; Right salto
+*WheelRight:: {
+    if (SetPause)
+        return
+    b := GetKeyState("RButton", "P")
+    if (!b) {
+        Click("Down Right")
+        Sleep(15)
+    }
+    r := GetKeyState("D", "P")
+    if (!r)
+        Send("{D down}")
+    Send("{Space down}")
+    Sleep(25)
+    Send("{Space up}")
+    if (!r)
+        Send("{D up}")
+    if (!b)
+        Click("Up Right")
+}
+
+NumPad3:: {
+    if (SetPause)
+        return
+    ; Зажать Shift + W
+    Send "{W down}"
+}
+
+/* Q:: {
+    if (SetPause)
+        return
+    While GetKeyState("Q", "P") {
+        Send("~")
+        Sleep(25)
+    }
+} */
+
+/* *NumPad0:: {
+    if (SetPause)
+        return
+    ; Зажать Shift + W
+    Send "{Shift down}{w down}"
+} */
+
+/*
+keyboard_clicker()
+{
+    Loop
+    {
+        If GetKeyState("F8", "P") && !SetPause
+        {
+            Click
+            Sleep, 100
+        }
+    }
+    return
+}
+*/
+
+#HotIf
+
+; ## ## ## ## ##
+; ## Settings
+
+; Home
+sc147:: {
+    global SetPause := false
+    Tooltip("Pause removed.")
+    SetTimer () => ToolTip(), -2000
+    return
+}
+
+; End
+sc14F:: {
+    global SetPause := true
+    Tooltip("Pause set.")
+    SetTimer () => ToolTip(), -2000
+    return
+}
+
+; Ctrl + Home
+^sc147:: {
+    Reload
+    return
+}
+
+; Ctrl + End
+^sc14F:: {
+    ExitApp
+    return
+}
