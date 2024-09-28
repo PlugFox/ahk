@@ -52,7 +52,7 @@ return
     Click()
     delay := 1900
     counter := 0
-    While !GetKeyState("Ins", "P") && !GetKeyState("Alt", "P") && !SetPause {
+    while !GetKeyState("Ins", "P") && !GetKeyState("Alt", "P") && !SetPause {
         if (SetPause)
             return
         Sleep(25)
@@ -71,7 +71,7 @@ return
     if (SetPause)
         return
     Sleep(250)
-    While GetKeyState("E", "P") && !SetPause {
+    while GetKeyState("E", "P") && !SetPause {
         Send("{E}")
         Sleep(25)
     }
