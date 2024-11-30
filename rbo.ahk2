@@ -1,0 +1,158 @@
+#Requires AutoHotkey v2.0
+
+#Warn ; Enable warnings to assist with detecting common errors
+#SingleInstance Force ; Заменять текущее приложение, запускаемыми
+#MaxThreadsPerHotkey 1 ; Макс кол-во потоков на кнопку
+#WinActivateForce ; Пропустить более мягкий метод активации окна
+
+SetKeyDelay 16, 16 ; Скорость эмуляции клавиши
+SetMouseDelay 5 ; Скорость мыши
+SetWorkingDir A_InitialWorkingDir ; Устанавливаю рабочую папку
+SetTitleMatchMode 2 ; Sets the matching behavior of the WinTitle parameter in commands such as WinWait
+
+A_HotkeyInterval := 2000
+A_MaxHotkeysPerInterval := 10000
+global SetPause := false ; Глобальная переменная паузы (не трогать)
+
+global press := 50 ; 60
+global delay := 16 ; 16
+
+return
+
+; Hotkeys:
+; * # - Win
+; * ^ - Ctrl
+; * ! - Alt
+; * + - Shift
+; * * - (wildcard) allows the hotkey to fire even if you are holding modifier keys that the hotkey doesn't include symbols for
+; * ~ - (no-suppress) prevents the hotkey from blocking the key's native function
+; * $ - (use hook) prevents unintentional loops when sending keys, and in some instances makes the hotkey more reliable
+
+#HotIf WinActive("Ragnarok Battle Offline")
+
+; Q - Down + Down + Light Attack
+~*Q:: {
+    if (SetPause)
+        return
+    ;Sleep(250)
+    while GetKeyState("Q", "P") && !SetPause {
+        Send("{S down}")
+        Sleep(press)
+        Send("{S up}")
+
+        Sleep(delay)
+
+        Send("{S down}")
+        Sleep(press)
+        Send("{S up}")
+
+        Sleep(delay)
+
+        Send("{Numpad7 down}")
+        Sleep(press)
+        Send("{Numpad7 up}")
+
+        Sleep(delay)
+
+        if (!GetKeyState("Q", "P") || SetPause)
+            return
+
+        Sleep(1500)
+    }
+}
+
+; E - Down + Down + Strong Attack
+~*E:: {
+    if (SetPause)
+        return
+    ;Sleep(250)
+    while GetKeyState("E", "P") && !SetPause {
+        Send("{S down}")
+        Sleep(press)
+        Send("{S up}")
+
+        Sleep(delay)
+
+        Send("{S down}")
+        Sleep(press)
+        Send("{S up}")
+
+        Sleep(delay)
+
+        Send("{Numpad8 down}")
+        Sleep(press)
+        Send("{Numpad8 up}")
+
+        Sleep(delay)
+
+        if (!GetKeyState("E", "P") || SetPause)
+            return
+
+        Sleep(1500)
+    }
+}
+
+; Numpad6 - Spell + Down + Down + Strong Attack
+~*Numpad6:: {
+    if (SetPause)
+        return
+    ;Sleep(250)
+    while GetKeyState("Numpad6", "P") && !SetPause {
+        Send("{NumpadAdd down}")
+        Sleep(25)
+        Send("{NumpadAdd up}")
+
+        Sleep(25)
+
+        Send("{D down}")
+        Sleep(25)
+        Send("{D up}")
+
+        Sleep(25)
+
+        Send("{D down}")
+        Sleep(25)
+        Send("{D up}")
+
+        Sleep(25)
+
+        Send("{Numpad8 down}")
+        Sleep(25)
+        Send("{Numpad8 up}")
+
+        Sleep(300)
+    }
+}
+
+#HotIf
+
+; ## ## ## ## ##
+; ## Settings
+
+; Home
+sc147:: {
+    global SetPause := false
+    Tooltip("Pause removed.")
+    SetTimer () => ToolTip(), -2000
+    return
+}
+
+; End
+sc14F:: {
+    global SetPause := true
+    Tooltip("Pause set.")
+    SetTimer () => ToolTip(), -2000
+    return
+}
+
+; Ctrl + Home
+^sc147:: {
+    Reload
+    return
+}
+
+; Ctrl + End
+^sc14F:: {
+    ExitApp
+    return
+}
